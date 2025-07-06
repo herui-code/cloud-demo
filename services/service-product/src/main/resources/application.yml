@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: service-product
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        import-check:
+          #禁用springcloud 配置文件导入检查
+          enabled: false
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      eager: true
+  config:
+    import: nacos:${spring.application.name}.properties
+server:
+  port: 9000

@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: seata-account
+  datasource:
+    url: jdbc:mysql://localhost:3306/account_db?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        import-check:
+          enabled: false
+server:
+  port: 10000
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+#seata事务分组，默认为default，是为了实现seata服务器高可用的的
+#seata:
+#  data-source-proxy-mode: XA
+seata:
+  tx-service-group: default_tx_group #默认值就是这个，如果不配，就去这个default_tx_group值
+#每一个项目需要引入一个seata的配置文件，在项目下创建一个file.conf.这里面的内容，完全可以放入nacos中。
+
+#每一个库中都有一个undo_log表，xid:表示全局事务id,branch_id:表示分支事务id,context:表示全局事务的参数，rollback_info:表示回滚的信息，log_status:表示日志的状态，0表示正常，1表示异常，2表示已经回滚，3表示已经清理

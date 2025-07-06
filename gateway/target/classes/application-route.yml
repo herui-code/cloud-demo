@@ -1,0 +1,67 @@
+spring:
+  cloud:
+    gateway:
+
+
+      routes:
+        - id: bing-route
+          uri: https://cn.bing.com/
+          predicates:
+            - name: Path
+              args:
+                patters: /search
+            - name: Query
+              args:
+                param: q
+                regexp: haha
+            - Vip=user,admin
+
+
+          #order: 表示优先级，数字越小优先级越高
+          order: 10
+        - id: order-route
+          uri: lb://service-order
+          predicates:
+            - name: Path
+              args:
+                patters: /api/order/**
+                match-trailing-slash: true
+            #在实际运行时候，PathRoutePredicateFactory创建predicate实例。Path的名字是*RoutePredicateFactory,在这类里面，有一个
+            #Config内部类，里面规定了args可以配置的参数
+            #Path=/api/order/**是一种简写，实际应该写成name: Path, args: patterns: /api/order/**
+           # - Path=/api/order/**
+            #还存在其他的断言形式，比如Query，Header等等
+            #他们也存在简单命名和常规命名方式，比如Query断言，就有一个叫做QueryRoutePredicateFactory的类创建Query断言
+            #他们都有一个父类 RoutePredicateFactory
+
+          #filters:过滤器，是用来修改请求响应的，内置的过滤器，通过命名，可以发现大多数过滤器是对请求头，请求参数，请求体，响应头，响应参数，响应体进行修改
+          #过滤器抽象类AbstractGatewayFilterFactory 下面有很多实现了的内置过滤器，使用方法和predicate一样，
+          #*GatewayFilterFactory,*号就是名字，比如RewritePath
+          #演示内置过滤器 -路径重写-让服务接收到的最终路径去除前缀 /api/order/readDb -> /readDb
+          filters:
+            #含义：将/api/order/后面的部分捕获了。将后续内容给改为/$\{segment}，即只要后面的内容
+            - RewritePath=/api/order/?(?<segment>.*),/$\{segment}
+            #如果写UUID，就用UUID生成一个，如果写jwt,就用jwt生成一个
+            - OnceToken=X-Response-token,uuid
+          order: 1
+        - id: product-route
+          uri: lb://service-product
+          predicates:
+            - Path=/api/product/**
+          order: 2
+          filters:
+            - RewritePath=/api/product/?(?<segment>.*),/$\{segment}
+      default-filters:
+        - AddResponseHeader=X-Response-ABC,123
+      #GlobalFilter-全局filter，对所有请求都生效的filter，只需要实现GlobalFilter接口，同时也可以实现ordered的接口来指定这个filter的自行顺序，数字越小，优先级越高
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns: '*'
+            allowed-methods: '*'
+            allowed-headers: '*'
+
+
+
+
+

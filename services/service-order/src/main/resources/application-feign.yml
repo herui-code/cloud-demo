@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: full
+            connect-timeout: 1000
+            read-timeout: 2000
+          service-product:
+            logger-level: full
+            connect-timeout: 3000
+            read-timeout: 5000
+#            request-interceptors:
+#              - com.atguigu.order.intercepter.XTokenRequestIntercepter
+#            retryer: feign.Retryer.Default
+feign:
+  sentinel:
+    enabled: true

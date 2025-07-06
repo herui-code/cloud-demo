@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      # sentinel 启动时加载,默认是懒加载，即访问后加载
+      eager: true
+      #是否要统一web上下文，是否要分割请求链路 true（默认）：表示统一 ,不进行分割 false：不统一，进行分割
+      web-context-unify: false

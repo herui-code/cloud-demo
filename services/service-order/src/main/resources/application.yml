@@ -1,0 +1,52 @@
+server:
+  port: 8000
+spring:
+  profiles:
+    active: dev
+    include:
+      - feign
+      - sentinel
+  application:
+    name: service-order
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      config:
+        #dev
+        namespace: 50807b01-5aee-41d8-9060-3aa092871d86
+        #test
+#        namespace: a1c44bff-6417-4569-9dc2-f46a7c628611
+        #prod
+#        namespace: 14558e20-57f1-404e-9230-0d9d676614f1
+        import-check:
+          enabled: false
+logging:
+  level:
+    com.atguigu.order.feign: debug
+---
+spring:
+  config:
+    import:
+      - nacos:common.properties?group=order
+      - nacos:database.properties?group=order
+    activate:
+      on-profile: dev
+---
+spring:
+  config:
+    import:
+      - nacos:common.properties?group=order
+      - nacos:database.properties?group=order
+    activate:
+      on-profile: test
+---
+spring:
+  config:
+    import:
+      - nacos:common.properties?group=order
+      - nacos:database.properties?group=order
+    activate:
+      on-profile: prod
+
+
+
