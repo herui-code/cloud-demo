@@ -55,6 +55,6 @@
             </plugin>
         </plugins>
     </build>
-
+ <!-- lookup parent from repository 简单修改，看能否通过idea拉取 -->
 
 </project>
